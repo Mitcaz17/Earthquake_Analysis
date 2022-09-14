@@ -1,4 +1,4 @@
-console.log("working");
+// console.log("working");
 
 // let map = L.map('mapid').setView([40.7, -94.5], 4);
 
@@ -45,8 +45,12 @@ let map = L.map('mapid', {
 
 let earthquakes = new L.layerGroup();
 
+// D-1 2nd layer group 
+let tectonicPlates = new L.layerGroup();
+
 let overlays = {
-    Earthquakes: earthquakes
+    Earthquakes: earthquakes,
+    "Tectonic Plates": tectonicPlates,
 };
 
 
@@ -171,7 +175,7 @@ d3.json(earthquakeData).then(function (data) {
 
     legend.onAdd = function () {
         let div = L.DomUtil.create("div", "info legend");
-    
+
 
         const magnitudes = [0, 1, 2, 3, 4, 5];
         const colors = [
@@ -186,13 +190,31 @@ d3.json(earthquakeData).then(function (data) {
         for (var i = 0; i < magnitudes.length; i++) {
             console.log(colors[i]);
             div.innerHTML +=
-            "<i style='background: " + colors[i] + "'></i> " +
-            magnitudes[i] + (magnitudes[i + 1] ? "&ndash;" + magnitudes[i + 1] + "<br>" : "+");
+                "<i style='background: " + colors[i] + "'></i> " +
+                magnitudes[i] + (magnitudes[i + 1] ? "&ndash;" + magnitudes[i + 1] + "<br>" : "+");
         }
         return div;
     };
-   
+
     legend.addTo(map);
+
+    // Link to tectonic plates
+
+    d3.json("https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json").then(function (tectonicData) {
+        console.log(tectonicData)
+
+        L.geoJSON(tectonicData, {
+            color: "orange",
+            weight: 2.5,
+
+
+        }).addTo(tectonicPlates);
+        
+        tectonicPlates.addTo(map);
+
+
+
+    });
 
 
 
